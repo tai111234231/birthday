@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Birthday Cake Animation</title>
+<style>
+body {
+  margin: 0;
+  background: linear-gradient(to top, #fff0f5, #ffe0e0);
+  height: 100vh; overflow: hidden;
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  font-family: cursive;
+}
+
+/* khung bánh */
+.cake { position: relative; width: 220px; height: 260px; }
+
+/* lát bánh và kem */
+.layer, .cream {
+  position: absolute;
+  opacity: 0;
+  transform: translateY(-400px);
+  animation-fill-mode: forwards;
+}
+
+@keyframes dropBounce {
+  0%   { transform: translateY(-400px); opacity: 0; }
+  70%  { transform: translateY(20px); opacity: 1; }
+  85%  { transform: translateY(-10px); }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* các tầng */
+.layer1 { bottom: 0; width: 180px; height: 40px; background: #ffb347;
+          border-radius: 8px; left: 20px;
+          animation: dropBounce 1s ease-in forwards 0s; }
+
+.cream1 { bottom: 40px; width: 200px; height: 20px; background: #fff;
+          border-radius: 0 0 15px 15px; left: 10px;
+          animation: dropBounce 1s ease-in forwards 0.8s; }
+
+.layer2 { bottom: 60px; width: 160px; height: 40px; background: #ffcc80;
+          border-radius: 8px; left: 30px;
+          animation: dropBounce 1s ease-in forwards 1.6s; }
+
+.cream2 { bottom: 100px; width: 180px; height: 20px; background: #fff;
+          border-radius: 0 0 15px 15px; left: 20px;
+          animation: dropBounce 1s ease-in forwards 2.4s; }
+
+.layer3 { bottom: 120px; width: 140px; height: 40px; background: #ffb347;
+          border-radius: 8px; left: 40px;
+          animation: dropBounce 1s ease-in forwards 3.2s; }
+
+.cream3 { bottom: 160px; width: 160px; height: 20px; background: #fff;
+          border-radius: 0 0 15px 15px; left: 30px;
+          animation: dropBounce 1s ease-in forwards 4s; }
+
+/* nến */
+.candle {
+  position: absolute;
+  width: 20px; height: 60px;
+  background: #ff4081;
+  bottom: 180px; left: 100px;
+  border-radius: 4px;
+  opacity: 0;
+  animation: fadeIn 1s forwards 4.8s;
+}
+
+/* flame tắt ban đầu */
+.flame {
+  position: absolute;
+  width: 20px; height: 20px;
+  background: radial-gradient(circle, gold 40%, orange 70%, transparent 100%);
+  border-radius: 50%;
+  top: -20px; left: 0;
+  opacity: 0;
+}
+
+@keyframes flame {
+  from { opacity:0.7; transform: scale(1); }
+  to   { opacity:1; transform: scale(1.2) translateY(-2px); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* chữ */
+.Happy__Birthday {
+  margin-top: 20px; font-size: 3em; color: #ff4081;
+  text-shadow: 0 0 10px #fff, 0 0 20px #ff80ab;
+  opacity: 0;
+}
+
+/* My Love */
+.Sub__Text {
+  margin-top: 10px;
+  font-size: 2.5em;
+  color: #ff69b4;
+  text-shadow: 0 0 10px #fff, 0 0 15px #ff80ab;
+  opacity: 0; /* ban đầu ẩn */
+  font-family: cursive; /* cùng font chữ */
+}
+
+/* confetti */
+.confetti {
+  position: absolute; top: -10px;
+  border-radius: 50%; opacity: 0.8;
+  animation: fall linear forwards;
+}
+@keyframes fall { to { transform: translateY(110vh); } }
+</style>
+</head>
+<body>
+  <div class="cake">
+    <div class="layer layer1"></div>
+    <div class="cream cream1"></div>
+    <div class="layer layer2"></div>
+    <div class="cream cream2"></div>
+    <div class="layer layer3"></div>
+    <div class="cream cream3"></div>
+    <div class="candle"><div class="flame" id="flame"></div></div>
+  </div>
+  <div class="Happy__Birthday" id="hbText">🎉 Happy Birthday 🎉</div>
+  <div class="Sub__Text">💖 My Love 💖</div>
+
+  <button onclick="startCelebration(event)" 
+        style="margin-top:20px; padding:10px 20px; font-size:1.2em; border:none; border-radius:10px; background:#ff4081; color:white; cursor:pointer;">
+    🔥Burn Candles🔥
+  </button>
+
+  <script>
+  function startCelebration(event) {
+    // chạy nhạc
+    document.getElementById('birthday-audio').play();
+
+    // bật flame
+    const flame = document.getElementById('flame');
+    flame.style.opacity = "1";
+    flame.style.animation = "flame 0.5s infinite alternate";
+
+    // hiện chữ Happy Birthday
+    document.getElementById('hbText').style.animation = "fadeIn 2s forwards";
+
+    // hiện chữ My Love sau 1 giây
+    document.querySelector('.Sub__Text').style.animation = "fadeIn 2s forwards 1s";
+
+    // bắt đầu confetti
+    setInterval(createConfetti, 200);
+
+    // ẩn nút
+    event.target.style.display = "none";
+  }
+
+  // confetti rơi
+  function createConfetti() {
+    const confetti = document.createElement("div");
+    confetti.classList.add("confetti");
+    const size = Math.random() * 10 + 5;
+    confetti.style.width = size + "px";
+    confetti.style.height = size + "px";
+    confetti.style.left = Math.random() * 100 + "vw";
+    confetti.style.background = ["#ff4081","#ffd700","#40c4ff","#69f0ae"][Math.floor(Math.random()*4)];
+    const duration = Math.random() * 3 + 3;
+    confetti.style.animationDuration = duration + "s";
+    document.body.appendChild(confetti);
+    setTimeout(() => confetti.remove(), duration * 1000);
+  }
+  </script>
+
+  <audio id="birthday-audio" loop>
+    <source src="birthday.mp3" type="audio/mpeg">
+  </audio>
+</body>
+</html>
